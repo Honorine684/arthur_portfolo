@@ -11,11 +11,7 @@ const GlobeGIS = dynamic(() => import("@/components/ui/GlobeGIS"), {
   ),
 });
 
-const STATS = [
-  { value: "8+", label: "ans d'XP" },
-  { value: "60+", label: "projets" },
-  { value: "20+", label: "collectivités" },
-];
+
 
 export default function Hero() {
   return (
@@ -88,17 +84,7 @@ export default function Hero() {
             </a>
           </div>
 
-          {/* Stats */}
-          <div className="flex gap-8 sm:gap-10 border-t border-gray-800/60 pt-8">
-            {STATS.map((s) => (
-              <div key={s.label}>
-                <div className="text-2xl sm:text-3xl font-bold text-white">{s.value}</div>
-                <div className="text-xs text-gray-500 uppercase tracking-widest mt-1">
-                  {s.label}
-                </div>
-              </div>
-            ))}
-          </div>
+
         </div>
 
         {/* ── Colonne droite : Globe 3D ── */}
