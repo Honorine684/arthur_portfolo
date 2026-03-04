@@ -1,13 +1,16 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Pencil, Trash2 } from "lucide-react";
 
-export default function ListeProjetsAdmin({ projets }) {
+export default function ListeProjetsAdmin({ projets: initial }) {
+  const [projets, setProjets] = useState(initial);
   const router = useRouter();
 
   async function supprimer(id) {
     if (!confirm("Supprimer ce projet ?")) return;
+    setProjets((prev) => prev.filter((p) => p.id !== id));
     await fetch(`/api/projets/${id}`, { method: "DELETE" });
     router.refresh();
   }
