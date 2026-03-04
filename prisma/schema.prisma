@@ -1,0 +1,21 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Projet {
+  id          Int      @id @default(autoincrement())
+  titre       String
+  description String
+  tags        String   // JSON stringifié : ["QGIS", "PostGIS"]
+  image       String?
+  lien        String?
+  publie      Boolean  @default(false)
+  ordre       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
