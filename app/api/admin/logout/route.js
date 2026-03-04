@@ -3,5 +3,5 @@ import { cookies } from "next/headers";
 
 export async function POST() {
   cookies().delete("admin_code");
-  return NextResponse.redirect(new URL("/admin", process.env.NEXTAUTH_URL || "http://localhost:3000"));
+  return NextResponse.redirect(new URL("/admin", process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"));
 }
