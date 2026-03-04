@@ -5,13 +5,13 @@ import ListeProjetsAdmin from "@/components/admin/ListeProjetsAdmin";
 
 export const dynamic = "force-dynamic";
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
   const cookie = cookies().get("admin_code");
   if (cookie?.value !== process.env.ADMIN_CODE) {
     redirect("/admin");
   }
 
-  const projets = lireProjets();
+  const projets = await lireProjets();
 
   return (
     <div className="min-h-screen bg-gray-950 px-4 py-10">

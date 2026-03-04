@@ -10,7 +10,7 @@ function estAdmin() {
 }
 
 export async function GET() {
-  const projets = lireProjets();
+  const projets = await lireProjets();
   return NextResponse.json(projets);
 }
 
@@ -19,6 +19,6 @@ export async function POST(request) {
     return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
   }
   const body = await request.json();
-  const projet = ajouterProjet(body);
+  const projet = await ajouterProjet(body);
   return NextResponse.json(projet, { status: 201 });
 }

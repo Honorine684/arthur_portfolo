@@ -5,14 +5,14 @@ import FormulaireProjet from "@/components/admin/FormulaireProjet";
 
 export const dynamic = "force-dynamic";
 
-export default function EditerProjetPage({ params }) {
+export default async function EditerProjetPage({ params }) {
   const cookie = cookies().get("admin_code");
   if (cookie?.value !== process.env.ADMIN_CODE) {
     redirect("/admin");
   }
 
   const id = parseInt(params.id);
-  const projets = lireProjets();
+  const projets = await lireProjets();
   const projet = projets.find((p) => p.id === id);
 
   if (!projet) {

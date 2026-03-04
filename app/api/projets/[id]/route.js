@@ -15,7 +15,7 @@ export async function PUT(request, { params }) {
   }
   const id = parseInt(params.id);
   const body = await request.json();
-  const projet = modifierProjet(id, body);
+  const projet = await modifierProjet(id, body);
   if (!projet) {
     return NextResponse.json({ error: "Introuvable" }, { status: 404 });
   }
@@ -27,6 +27,6 @@ export async function DELETE(request, { params }) {
     return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
   }
   const id = parseInt(params.id);
-  supprimerProjet(id);
+  await supprimerProjet(id);
   return NextResponse.json({ ok: true });
 }

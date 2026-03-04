@@ -9,8 +9,8 @@ import { lireProjets } from "@/lib/projets";
 
 export const dynamic = "force-dynamic";
 
-export default function HomePage() {
-  const projets = lireProjets();
+export default async function HomePage() {
+  const projets = await lireProjets();
 
   return (
     <>
