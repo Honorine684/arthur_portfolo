@@ -1,10 +1,26 @@
 [
   {
-    "id": 1772637501149,
-    "titre": "test145",
-    "description": "testons",
+    "id": 1772639670906,
+    "titre": "il mettra le titra",
+    "description": "Ce projet a exploré la relation entre la verdure urbaine et le statut socio-économique à Syracuse, dans l'État de New York. À l'aide de Python avec GeoPandas et des données du recensement, j'ai créé une carte choroplèthe à deux variables comparant la densité des arbres au revenu médian des ménages au niveau des secteurs de recensement. Les données proviennent du portail de données de Syracuse.",
     "tags": [],
-    "image": "/images/1772637496802-atx0tb9c9qj.jpeg",
+    "image": "/images/1772639668409-8s60l8fcgj5.png",
+    "lien": ""
+  },
+  {
+    "id": 1772639714963,
+    "titre": "Coupe de façade Ilot Viennois",
+    "description": "Ce projet a exploré la relation entre la verdure urbaine et le statut socio-économique à Syracuse, dans l'État de New York. À l'aide de Python avec GeoPandas et des données du recensement, j'ai créé une carte choroplèthe à deux variables comparant la densité des arbres au revenu médian des ménages au niveau des secteurs de recensement. Les données proviennent du portail de données de Syracuse.",
+    "tags": [],
+    "image": "/images/1772639683838-lrb9vq40i1.jpeg",
+    "lien": ""
+  },
+  {
+    "id": 1772639782182,
+    "titre": "Carte des rues pavillonnaires de Chevreuille",
+    "description": "Ce projet a exploré la relation entre la verdure urbaine et le statut socio-économique à Syracuse, dans l'État de New York. À l'aide de Python avec GeoPandas et des données du recensement, j'ai créé une carte choroplèthe à deux variables comparant la densité des arbres au revenu médian des ménages au niveau des secteurs de recensement. Les données proviennent du portail de données de Syracuse.",
+    "tags": [],
+    "image": "/images/1772639756156-jamtpopr799.jpeg",
     "lien": ""
   }
 ]
