@@ -58,8 +58,8 @@ export default function FormulaireProjet({ projet }) {
     });
 
     if (res.ok) {
-      router.push("/admin/dashboard");
       router.refresh();
+      router.push("/admin/dashboard");
     } else {
       const data = await res.json();
       setErreur(data.error || "Une erreur est survenue.");
