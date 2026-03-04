@@ -19,14 +19,20 @@ export async function GET() {
 }
 
 export async function POST(request) {
+  console.log("[POST /api/projets] début");
   if (!estAdmin()) {
+    console.log("[POST /api/projets] non autorisé");
     return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
   }
   try {
     const body = await request.json();
+    console.log("[POST /api/projets] body reçu:", JSON.stringify(body).slice(0, 200));
+    console.log("[POST /api/projets] USE_BLOB:", !!process.env.BLOB_READ_WRITE_TOKEN);
     const projet = await ajouterProjet(body);
+    console.log("[POST /api/projets] projet créé, id:", projet.id);
     return NextResponse.json(projet, { status: 201 });
   } catch (e) {
+    console.error("[POST /api/projets] ERREUR:", e.message, e.stack);
     return NextResponse.json({ error: e.message }, { status: 500 });
   }
 }
