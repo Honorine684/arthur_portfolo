@@ -8,6 +8,7 @@ const liens = [
   { label: "À propos", href: "#apropos" },
   { label: "Compétences", href: "#competences" },
   { label: "Projets", href: "#projets" },
+  { label: "Personnalité", href: "#personnalite" },
   { label: "Contact", href: "#contact" },
 ];
 

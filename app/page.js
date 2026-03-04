@@ -4,6 +4,7 @@ import Parcours from "@/components/sections/Parcours";
 import Apropos from "@/components/sections/Apropos";
 import Competences from "@/components/sections/Competences";
 import Projets from "@/components/sections/Projets";
+import LoisirsPersonnalite from "@/components/sections/LoisirsPersonnalite";
 import Contact from "@/components/sections/Contact";
 import { lireProjets } from "@/lib/projets";
 
@@ -21,6 +22,7 @@ export default async function HomePage() {
         <Apropos />
         <Competences />
         <Projets projets={projets} />
+        <LoisirsPersonnalite />
         <Contact />
       </main>
     </>
