@@ -10,15 +10,23 @@ function estAdmin() {
 }
 
 export async function GET() {
-  const projets = await lireProjets();
-  return NextResponse.json(projets);
+  try {
+    const projets = await lireProjets();
+    return NextResponse.json(projets);
+  } catch (e) {
+    return NextResponse.json({ error: e.message }, { status: 500 });
+  }
 }
 
 export async function POST(request) {
   if (!estAdmin()) {
     return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
   }
-  const body = await request.json();
-  const projet = await ajouterProjet(body);
-  return NextResponse.json(projet, { status: 201 });
+  try {
+    const body = await request.json();
+    const projet = await ajouterProjet(body);
+    return NextResponse.json(projet, { status: 201 });
+  } catch (e) {
+    return NextResponse.json({ error: e.message }, { status: 500 });
+  }
 }

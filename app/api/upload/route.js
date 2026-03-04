@@ -32,21 +32,25 @@ export async function POST(request) {
   const ext = fichier.name.split(".").pop().toLowerCase();
   const nom = `images/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
 
-  // Production (Vercel) → Vercel Blob
-  if (process.env.BLOB_READ_WRITE_TOKEN) {
-    const { put } = await import("@vercel/blob");
-    const blob = await put(nom, fichier, { access: "public" });
-    return NextResponse.json({ url: blob.url });
-  }
+  try {
+    // Production (Vercel) → Vercel Blob
+    if (process.env.BLOB_READ_WRITE_TOKEN) {
+      const { put } = await import("@vercel/blob");
+      const blob = await put(nom, fichier, { access: "public" });
+      return NextResponse.json({ url: blob.url });
+    }
 
-  // Développement local → filesystem
-  const { writeFile, mkdir } = await import("fs/promises");
-  const path = await import("path");
-  const dossier = path.join(process.cwd(), "public", "images");
-  await mkdir(dossier, { recursive: true });
-  await writeFile(
-    path.join(dossier, nom.replace("images/", "")),
-    Buffer.from(await fichier.arrayBuffer())
-  );
-  return NextResponse.json({ url: `/${nom}` });
+    // Développement local → filesystem
+    const { writeFile, mkdir } = await import("fs/promises");
+    const path = await import("path");
+    const dossier = path.join(process.cwd(), "public", "images");
+    await mkdir(dossier, { recursive: true });
+    await writeFile(
+      path.join(dossier, nom.replace("images/", "")),
+      Buffer.from(await fichier.arrayBuffer())
+    );
+    return NextResponse.json({ url: `/${nom}` });
+  } catch (e) {
+    return NextResponse.json({ error: e.message }, { status: 500 });
+  }
 }

@@ -13,20 +13,28 @@ export async function PUT(request, { params }) {
   if (!estAdmin()) {
     return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
   }
-  const id = parseInt(params.id);
-  const body = await request.json();
-  const projet = await modifierProjet(id, body);
-  if (!projet) {
-    return NextResponse.json({ error: "Introuvable" }, { status: 404 });
+  try {
+    const id = parseInt(params.id);
+    const body = await request.json();
+    const projet = await modifierProjet(id, body);
+    if (!projet) {
+      return NextResponse.json({ error: "Introuvable" }, { status: 404 });
+    }
+    return NextResponse.json(projet);
+  } catch (e) {
+    return NextResponse.json({ error: e.message }, { status: 500 });
   }
-  return NextResponse.json(projet);
 }
 
 export async function DELETE(request, { params }) {
   if (!estAdmin()) {
     return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
   }
-  const id = parseInt(params.id);
-  await supprimerProjet(id);
-  return NextResponse.json({ ok: true });
+  try {
+    const id = parseInt(params.id);
+    await supprimerProjet(id);
+    return NextResponse.json({ ok: true });
+  } catch (e) {
+    return NextResponse.json({ error: e.message }, { status: 500 });
+  }
 }
