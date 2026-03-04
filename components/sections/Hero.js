@@ -1,4 +1,5 @@
 import { MapPin, Download, ChevronRight } from "lucide-react";
+import Image from "next/image";
 import dynamic from "next/dynamic";
 
 const GlobeGIS = dynamic(() => import("@/components/ui/GlobeGIS"), {
@@ -33,11 +34,23 @@ export default function Hero() {
             Expert SIG · Géomatique · Urbanisme
           </span>
 
+          {/* Photo */}
+          <div className="relative w-36 h-36 sm:w-44 sm:h-44 mb-6 shrink-0">
+            <div className="absolute inset-0 rounded-2xl bg-emerald-500/15 blur-xl" />
+            <Image
+              src="/images/arthur_photo.jpeg"
+              alt="Arthur Levy APLOGAN"
+              fill
+              className="rounded-2xl object-cover border border-emerald-500/30 relative z-10"
+              sizes="176px"
+            />
+          </div>
+
           {/* Nom */}
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold leading-none tracking-tight mb-2">
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-none tracking-tight mb-2">
             <span className="text-white">Samir</span>
           </h1>
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold leading-none tracking-tight mb-6 lg:mb-8">
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-none tracking-tight mb-6 lg:mb-8">
             <span className="text-gray-500">Arthur Levy APLOGAN</span>
           </h1>
 
