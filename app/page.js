@@ -5,10 +5,12 @@ import Apropos from "@/components/sections/Apropos";
 import Competences from "@/components/sections/Competences";
 import Projets from "@/components/sections/Projets";
 import Contact from "@/components/sections/Contact";
-import { getProjetsPublies } from "@/lib/projets";
+import { lireProjets } from "@/lib/projets";
 
-export default async function HomePage() {
-  const projets = await getProjetsPublies();
+export const dynamic = "force-dynamic";
+
+export default function HomePage() {
+  const projets = lireProjets();
 
   return (
     <>

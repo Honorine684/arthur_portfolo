@@ -118,7 +118,7 @@ export default function Projets({ projets = [] }) {
               <Map size={48} />
               <p className="text-sm">
                 Aucun projet publié.{" "}
-                <a href="/admin" className="text-emerald-500 hover:text-emerald-400">
+                <a href="/admin/dashboard" className="text-emerald-500 hover:text-emerald-400">
                   Ajouter via l&apos;admin →
                 </a>
               </p>

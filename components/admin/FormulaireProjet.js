@@ -1,13 +1,12 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Upload, X, ImageIcon } from "lucide-react";
+import { Upload, X } from "lucide-react";
 
 export default function FormulaireProjet({ projet }) {
   const router = useRouter();
-  const estEdition = !!projet?.id;
-  const inputFichier = useRef(null);
+  const estEdition = !!projet;
 
   const [form, setForm] = useState({
     titre: projet?.titre ?? "",
@@ -15,56 +14,38 @@ export default function FormulaireProjet({ projet }) {
     tags: projet?.tags?.join(", ") ?? "",
     image: projet?.image ?? "",
     lien: projet?.lien ?? "",
-    publie: projet?.publie ?? false,
-    ordre: projet?.ordre ?? 0,
   });
-
-  const [uploadEnCours, setUploadEnCours] = useState(false);
   const [chargement, setChargement] = useState(false);
+  const [uploadEnCours, setUploadEnCours] = useState(false);
   const [erreur, setErreur] = useState("");
 
   function changer(e) {
-    const { name, value, type, checked } = e.target;
-    setForm((prev) => ({ ...prev, [name]: type === "checkbox" ? checked : value }));
+    setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
   }
 
-  async function gererUpload(e) {
+  async function uploaderImage(e) {
     const fichier = e.target.files?.[0];
     if (!fichier) return;
-
     setUploadEnCours(true);
-    setErreur("");
-
-    const formData = new FormData();
-    formData.append("fichier", fichier);
-
-    const res = await fetch("/api/upload", { method: "POST", body: formData });
+    const fd = new FormData();
+    fd.append("fichier", fichier);
+    const res = await fetch("/api/upload", { method: "POST", body: fd });
     const data = await res.json();
-
-    if (!res.ok) {
-      setErreur(data.error ?? "Erreur lors de l'upload.");
-    } else {
-      setForm((prev) => ({ ...prev, image: data.url }));
-    }
-
+    if (data.url) setForm((f) => ({ ...f, image: data.url }));
     setUploadEnCours(false);
-    // Reset input pour permettre de re-sélectionner le même fichier
-    inputFichier.current.value = "";
   }
 
-  function supprimerImage() {
-    setForm((prev) => ({ ...prev, image: "" }));
-  }
-
-  async function soumettre(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
     setChargement(true);
     setErreur("");
 
     const payload = {
       ...form,
-      tags: form.tags.split(",").map((t) => t.trim()).filter(Boolean),
-      ordre: parseInt(form.ordre) || 0,
+      tags: form.tags
+        .split(",")
+        .map((t) => t.trim())
+        .filter(Boolean),
     };
 
     const url = estEdition ? `/api/projets/${projet.id}` : "/api/projets";
@@ -76,166 +57,141 @@ export default function FormulaireProjet({ projet }) {
       body: JSON.stringify(payload),
     });
 
-    if (!res.ok) {
-      setErreur("Une erreur est survenue.");
+    if (res.ok) {
+      router.push("/admin/dashboard");
+      router.refresh();
+    } else {
+      const data = await res.json();
+      setErreur(data.error || "Une erreur est survenue.");
       setChargement(false);
-      return;
     }
-
-    router.push("/admin");
-    router.refresh();
   }
 
   return (
-    <form onSubmit={soumettre} className="space-y-6 max-w-2xl">
+    <form onSubmit={handleSubmit} className="space-y-5">
+      {/* Titre */}
       <div>
-        <label className="block text-sm text-gray-400 mb-1">Titre *</label>
+        <label className="block text-gray-400 text-sm mb-1.5">Titre *</label>
         <input
           name="titre"
           value={form.titre}
           onChange={changer}
           required
-          className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-emerald-500"
+          placeholder="Ex: Cartographie de l'accessibilité urbaine"
+          className="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500 transition-colors"
         />
       </div>
 
+      {/* Description */}
       <div>
-        <label className="block text-sm text-gray-400 mb-1">Description *</label>
+        <label className="block text-gray-400 text-sm mb-1.5">Description *</label>
         <textarea
           name="description"
           value={form.description}
           onChange={changer}
           required
           rows={4}
-          className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-emerald-500"
+          placeholder="Décris le projet, les outils utilisés, les résultats…"
+          className="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500 transition-colors resize-none"
         />
       </div>
 
+      {/* Tags */}
       <div>
-        <label className="block text-sm text-gray-400 mb-1">
-          Tags (séparés par des virgules)
+        <label className="block text-gray-400 text-sm mb-1.5">
+          Tags <span className="text-gray-600">(séparés par des virgules)</span>
         </label>
         <input
           name="tags"
           value={form.tags}
           onChange={changer}
-          placeholder="QGIS, PostGIS, Python"
-          className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-emerald-500"
+          placeholder="QGIS, PostGIS, Accessibilité"
+          className="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500 transition-colors"
         />
       </div>
 
-      {/* Image upload */}
+      {/* Image */}
       <div>
-        <label className="block text-sm text-gray-400 mb-2">Image du projet</label>
-
+        <label className="block text-gray-400 text-sm mb-1.5">Image</label>
         {form.image ? (
-          /* Prévisualisation */
-          <div className="relative w-full h-48 rounded-lg overflow-hidden bg-gray-900 border border-gray-700">
+          <div className="relative w-full aspect-[16/9] rounded-xl overflow-hidden bg-gray-900">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={form.image}
-              alt="Aperçu"
+              alt=""
               className="w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
-              <button
-                type="button"
-                onClick={() => inputFichier.current?.click()}
-                className="bg-white/20 hover:bg-white/30 text-white px-3 py-1.5 rounded-lg text-sm flex items-center gap-1.5 backdrop-blur-sm"
-              >
-                <Upload size={14} />
-                Changer
-              </button>
-              <button
-                type="button"
-                onClick={supprimerImage}
-                className="bg-red-500/70 hover:bg-red-500 text-white px-3 py-1.5 rounded-lg text-sm flex items-center gap-1.5"
-              >
-                <X size={14} />
-                Supprimer
-              </button>
-            </div>
+            <button
+              type="button"
+              onClick={() => setForm((f) => ({ ...f, image: "" }))}
+              className="absolute top-2 right-2 bg-black/60 hover:bg-black/80 text-white rounded-full p-1.5 transition-colors"
+            >
+              <X size={14} />
+            </button>
           </div>
         ) : (
-          /* Zone de dépôt */
-          <button
-            type="button"
-            onClick={() => inputFichier.current?.click()}
-            disabled={uploadEnCours}
-            className="w-full h-40 border-2 border-dashed border-gray-700 hover:border-emerald-500 rounded-lg flex flex-col items-center justify-center gap-2 text-gray-500 hover:text-emerald-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
+          <label className="flex flex-col items-center justify-center gap-3 w-full h-36 bg-gray-900 border border-dashed border-gray-700 hover:border-emerald-500 rounded-xl cursor-pointer transition-colors">
             {uploadEnCours ? (
-              <span className="text-sm">Upload en cours…</span>
+              <span className="text-gray-400 text-sm">Upload en cours…</span>
             ) : (
               <>
-                <ImageIcon size={28} />
-                <span className="text-sm">Cliquer pour uploader une image</span>
-                <span className="text-xs">JPG, PNG, WebP — max 5 Mo</span>
+                <Upload size={20} className="text-gray-500" />
+                <span className="text-gray-500 text-sm">
+                  Cliquer pour uploader
+                </span>
               </>
             )}
-          </button>
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={uploaderImage}
+            />
+          </label>
         )}
-
         <input
-          ref={inputFichier}
-          type="file"
-          accept="image/jpeg,image/png,image/webp,image/gif"
-          onChange={gererUpload}
-          className="hidden"
+          name="image"
+          value={form.image}
+          onChange={changer}
+          placeholder="Ou coller une URL d'image"
+          className="mt-2 w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-emerald-500 transition-colors"
         />
       </div>
 
+      {/* Lien */}
       <div>
-        <label className="block text-sm text-gray-400 mb-1">Lien externe</label>
+        <label className="block text-gray-400 text-sm mb-1.5">
+          Lien <span className="text-gray-600">(optionnel)</span>
+        </label>
         <input
           name="lien"
           value={form.lien}
           onChange={changer}
-          placeholder="https://..."
-          className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-emerald-500"
+          placeholder="https://…"
+          className="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500 transition-colors"
         />
-      </div>
-
-      <div className="grid grid-cols-2 gap-4 items-end">
-        <div>
-          <label className="block text-sm text-gray-400 mb-1">Ordre d&apos;affichage</label>
-          <input
-            name="ordre"
-            type="number"
-            value={form.ordre}
-            onChange={changer}
-            className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-emerald-500"
-          />
-        </div>
-        <label className="flex items-center gap-3 cursor-pointer pb-2">
-          <input
-            type="checkbox"
-            name="publie"
-            checked={form.publie}
-            onChange={changer}
-            className="w-4 h-4 accent-emerald-500"
-          />
-          <span className="text-gray-300">Publié</span>
-        </label>
       </div>
 
       {erreur && <p className="text-red-400 text-sm">{erreur}</p>}
 
-      <div className="flex gap-3">
+      <div className="flex gap-3 pt-2">
         <button
           type="submit"
-          disabled={chargement || uploadEnCours}
-          className="bg-emerald-500 hover:bg-emerald-600 disabled:opacity-50 text-white px-6 py-2 rounded-lg font-medium transition-colors"
+          disabled={chargement}
+          className="flex-1 bg-emerald-500 hover:bg-emerald-400 disabled:opacity-40 text-white font-semibold py-3 rounded-xl transition-colors"
         >
-          {chargement ? "Enregistrement…" : estEdition ? "Mettre à jour" : "Créer"}
+          {chargement
+            ? "Enregistrement…"
+            : estEdition
+            ? "Enregistrer"
+            : "Ajouter le projet"}
         </button>
-        <button
-          type="button"
-          onClick={() => router.push("/admin")}
-          className="border border-gray-700 text-gray-300 px-6 py-2 rounded-lg hover:border-gray-500 transition-colors"
+        <a
+          href="/admin/dashboard"
+          className="px-5 py-3 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-xl text-sm font-medium transition-colors text-center"
         >
           Annuler
-        </button>
+        </a>
       </div>
     </form>
   );
