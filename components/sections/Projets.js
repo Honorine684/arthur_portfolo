@@ -1,4 +1,4 @@
-import { ExternalLink, Map } from "lucide-react";
+import { ExternalLink, Map, FileText } from "lucide-react";
 
 function ProjetLigne({ projet, index }) {
   const estPair = index % 2 === 0;
@@ -125,11 +125,27 @@ export default function Projets({ projets = [] }) {
             </div>
           </div>
         ) : (
-          <div className="divide-y divide-gray-800/60">
-            {projets.map((projet, i) => (
-              <ProjetLigne key={projet.id} projet={projet} index={i} />
-            ))}
-          </div>
+          <>
+            <div className="divide-y divide-gray-800/60">
+              {projets.map((projet, i) => (
+                <ProjetLigne key={projet.id} projet={projet} index={i} />
+              ))}
+            </div>
+
+            {/* Rapport complet */}
+            <div className="py-10 flex justify-center">
+              <a
+                href="/images/doc.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-3 bg-gray-900 hover:bg-gray-800 border border-gray-700 hover:border-emerald-500/50 text-gray-300 hover:text-white px-6 py-3.5 rounded-xl transition-all duration-200 group"
+              >
+                <FileText size={18} className="text-emerald-400 group-hover:scale-110 transition-transform" />
+                <span className="text-sm font-medium">Lire le rapport complet — Accessibilité aux soins</span>
+                <ExternalLink size={14} className="text-gray-500 group-hover:text-emerald-400 transition-colors" />
+              </a>
+            </div>
+          </>
         )}
 
       </div>
